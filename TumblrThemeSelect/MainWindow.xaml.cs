@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -82,23 +83,17 @@ namespace TumblrThemeSelect
         }
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
-            GridLoading.Visibility = Visibility.Visible;
-            StackPanelDefaultParam.Children.Clear();
-            foreach (var param in ((Val.Theme)ListBoxTheme.SelectedItem)?.DefaultParams)
-            {
-                if (param.Key.StartsWith("select_lists")) { foreach (dynamic select in (IEnumerable)param.Value) { StackPanelDefaultParam.Children.Add(new ParametrePanel(select.Name, select.Value, t, GridLoading)); } }
-                else if (param.Key.StartsWith("select:")) { }
-                else { StackPanelDefaultParam.Children.Add(new ParametrePanel(param.Key, param.Value, t, GridLoading)); }
-            }
-            GridThemes.Visibility = Visibility.Collapsed;
-            GridCustomize.Visibility = Visibility.Visible;
-            GridLoading.Visibility = Visibility.Collapsed;
+            LoadEditing(((Val.Theme)ListBoxTheme.SelectedItem)?.DefaultParams);
         }
         private void ButtonCurrentThemeSettings_Click(object sender, RoutedEventArgs e)
         {
+            LoadEditing(t.Cav.CustomParams);
+        }
+        private void LoadEditing(IDictionary<string, object> data)
+        {
             GridLoading.Visibility = Visibility.Visible;
             StackPanelDefaultParam.Children.Clear();
-            foreach (var param in t.Cav.CustomParams)
+            foreach (var param in data)
             {
                 if (param.Key.StartsWith("select_lists")) { foreach (dynamic select in (IEnumerable)param.Value) { StackPanelDefaultParam.Children.Add(new ParametrePanel(select.Name, select.Value, t, GridLoading)); } }
                 else if (param.Key.StartsWith("select:")) { }
@@ -114,5 +109,6 @@ namespace TumblrThemeSelect
         {
             ListBoxThemeFilter.Filter = t => ((Val.Theme)t).Title.ToLowerInvariant().Contains(TextBoxSearch.Text.ToLowerInvariant());
         }
+
     }
 }

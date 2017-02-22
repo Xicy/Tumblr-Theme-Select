@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -19,7 +20,7 @@ namespace TumblrThemeSelect.Api
 
         public Tumblr(string username, string password, string blogname)
         {
-            restClient = new RestClient(@"https://www.tumblr.com/") { FollowRedirects = true, CookieContainer = new CookieContainer() };
+            restClient = new RestClient(@"https://www.tumblr.com/") { Encoding = Encoding.UTF8,FollowRedirects = true, CookieContainer = new CookieContainer() };
             uname = username;
             pword = password;
             bname = blogname;

@@ -52,8 +52,7 @@ namespace TumblrThemeSelect.Val
         private static bool CheckBool(dynamic b) => b is bool ? b : (b is string ? b.Contains("1") : false);
         private static bool CheckUrlValid(string source)
         {
-            Uri uriResult;
-            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            return Uri.TryCreate(source, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         public ParametrePanel(string id, dynamic value, Tumblr t, UIElement loading)
@@ -73,7 +72,7 @@ namespace TumblrThemeSelect.Val
                 val = new StackPanel { Orientation = Orientation.Horizontal };
                 var buttonUpload = new Button { Content = "Upload", FontSize = 12, Background = (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey") };
                 var buttonShow = new Button { Content = "Show", Margin = new Thickness(0, 0, 2, 0), FontSize = 12, Background = (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey"), Visibility = CheckUrlValid((string)Value) ? Visibility.Visible : Visibility.Collapsed }; buttonShow.Click += delegate { Process.Start((string)Value); };
-                var buttonRemove = new Button { Content = "X", Margin = new Thickness(2, 0, 0, 0), FontSize = 12, Background = (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey"), Visibility = CheckUrlValid((string)Value) ? Visibility.Visible : Visibility.Collapsed }; buttonRemove.Click += delegate { Value = ""; buttonShow.Visibility = Visibility.Collapsed; buttonRemove.Visibility = Visibility.Collapsed; buttonUpload.Background= (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey"); buttonUpload.Content = "Upload"; };
+                var buttonRemove = new Button { Content = "X", Margin = new Thickness(2, 0, 0, 0), FontSize = 12, Background = (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey"), Visibility = CheckUrlValid((string)Value) ? Visibility.Visible : Visibility.Collapsed }; buttonRemove.Click += delegate { Value = ""; buttonShow.Visibility = Visibility.Collapsed; buttonRemove.Visibility = Visibility.Collapsed; buttonUpload.Background = (SolidColorBrush)Application.Current.FindResource("ColorButtonGrey"); buttonUpload.Content = "Upload"; };
                 buttonUpload.Click += async (s, e) =>
                 {
                     var ofp = new OpenFileDialog();
@@ -95,7 +94,7 @@ namespace TumblrThemeSelect.Val
                 val.Children.Add(buttonUpload);
                 val.Children.Add(buttonRemove);
             }
-            else if (id.StartsWith("color")) { val = new ColorPicker { SelectedColor = FromHex(value), ColorMode = ColorMode.ColorCanvas}; ((ColorPicker)val).SelectedColorChanged += delegate { Value = FromColor(val.SelectedColor); }; }
+            else if (id.StartsWith("color")) { val = new ColorPicker { SelectedColor = FromHex(value), ColorMode = ColorMode.ColorCanvas }; ((ColorPicker)val).SelectedColorChanged += delegate { Value = FromColor(val.SelectedColor); }; }
             else if (id.StartsWith("if")) { val = new CheckBox { IsChecked = CheckBool(value), VerticalAlignment = VerticalAlignment.Center }; ((CheckBox)val).Checked += delegate { Value = val.IsChecked ? "1" : "0"; }; }
             else if (id.StartsWith("select")) { val = new ComboBox { DisplayMemberPath = "[1]" }; ((ComboBox)val).SelectionChanged += delegate { Value = val.SelectedItem[0]; }; foreach (dynamic selectparam in value) { val.Items.Add(new object[] { selectparam.Name, selectparam.Value.Value }); } val.SelectedIndex = 0; }
 
