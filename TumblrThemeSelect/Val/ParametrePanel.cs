@@ -13,7 +13,7 @@ namespace TumblrThemeSelect.Val
 {
     public class ParametrePanel : StackPanel
     {
-        public string ID;
+        public string Id;
         public object Value;
 
         private static string FromColor(Color c)
@@ -62,7 +62,7 @@ namespace TumblrThemeSelect.Val
             Margin = new Thickness(0, 2, 0, 2);
             Height = 25;
 
-            ID = id;
+            Id = id;
             Value = value;
 
             dynamic val = null;
