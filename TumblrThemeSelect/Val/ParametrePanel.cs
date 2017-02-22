@@ -52,7 +52,8 @@ namespace TumblrThemeSelect.Val
         private static bool CheckBool(dynamic b) => b is bool ? b : (b is string ? b.Contains("1") : false);
         private static bool CheckUrlValid(string source)
         {
-            return Uri.TryCreate(source, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            Uri uriResult;
+            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         public ParametrePanel(string id, dynamic value, Tumblr t, UIElement loading)
