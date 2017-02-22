@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Windows;
+﻿using System.Windows;
 
 namespace TumblrThemeSelect
 {
@@ -10,5 +7,6 @@ namespace TumblrThemeSelect
     /// </summary>
     public partial class App : Application
     {
+
     }
 }
