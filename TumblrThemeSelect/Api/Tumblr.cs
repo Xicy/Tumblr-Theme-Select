@@ -19,7 +19,7 @@ namespace TumblrThemeSelect.Api
 
         public Tumblr(string username, string password, string blogname)
         {
-            restClient = new RestClient(@"https://www.tumblr.com/") { CookieContainer = new CookieContainer() };
+            restClient = new RestClient(@"https://www.tumblr.com/") { FollowRedirects = true, CookieContainer = new CookieContainer() };
             uname = username;
             pword = password;
             bname = blogname;
@@ -32,18 +32,19 @@ namespace TumblrThemeSelect.Api
             {
                 try
                 {
-
                     var formKey =
-                        new Regex("name=\"tumblr-form-key\" content=\"(.*?)\"",
-                            RegexOptions.IgnoreCase | RegexOptions.Multiline).Match(restClient.Get(new RestRequest(@"login")).Content).Groups[1].Value;
+                        new Regex("name=\"tumblr-form-key\".*?content=\"(.*?)\"",
+                            RegexOptions.IgnoreCase | RegexOptions.Multiline).Match(restClient.Get(new RestRequest(@"login").AddHeader("Accept",
+                            "text/html,application/xhtml+xml,application/xml")).Content).Groups[1].Value;
                     var customizePageContent =
                     restClient.Post(
                         new RestRequest(@"login").AddParameter("user[email]", uname)
                             .AddParameter("user[password]", pword)
                             .AddParameter("form_key", formKey)
-                            .AddParameter("redirect_to", "/customize/" + bname)).Content;
-                    Cav =
-                        JsonConvert.DeserializeObject<CustomizeApiValue>(
+                            .AddParameter("redirect_to", "/customize/" + bname).AddHeader("Accept",
+                            "text/html,application/xhtml+xml,application/xml")).Content;
+
+                    Cav = JsonConvert.DeserializeObject<CustomizeApiValue>(
                             new Regex("Tumblr._init.blog =(.*?);\n", RegexOptions.IgnoreCase | RegexOptions.Multiline)
                                 .Match
                                 (
