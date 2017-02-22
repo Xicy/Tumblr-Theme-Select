@@ -2,40 +2,41 @@
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using RestSharp.Extensions;
+
 
 namespace TumblrThemeSelect
 {
-    public class Loader
+    public static class Loader
     {
         [STAThread]
         public static void Main()
         {
-            AppDomain.CurrentDomain.AssemblyResolve += OnResolveAssembly;
+            var executingAssembly = Assembly.GetExecutingAssembly();
+            var assemblies = executingAssembly.GetManifestResourceNames().Where(n => n.EndsWith(".dll")).ToDictionary(n => n, n => Assembly.Load(executingAssembly.GetManifestResourceStream(n).ReadAsBytes()));
+
+            AppDomain.CurrentDomain.AssemblyResolve += (s, e) =>
+            {
+                return assemblies.FirstOrDefault(kv => kv.Key == $"{new AssemblyName(e.Name).Name}.dll").Value;
+            };
 
             App.Main();
         }
 
-        private static Assembly OnResolveAssembly(object sender, ResolveEventArgs e)
+        public static byte[] ReadAsBytes(this Stream input)
         {
-            var thisAssembly = Assembly.GetExecutingAssembly();
-
-            var resources = thisAssembly.GetManifestResourceNames().Where(s => s.EndsWith(new AssemblyName(e.Name).Name + ".dll"));
-
-            if (!resources.Any()) return null;
-
-            try
+            var array = new byte[16384];
+            byte[] result;
+            using (var memoryStream = new MemoryStream())
             {
-                return Assembly.Load(thisAssembly.GetManifestResourceStream(resources.First()).ReadAsBytes());
+                int count;
+                while ((count = input.Read(array, 0, array.Length)) > 0)
+                {
+                    memoryStream.Write(array, 0, count);
+                }
+                result = memoryStream.ToArray();
             }
-            catch (IOException)
-            {
-                return null;
-            }
-            catch (BadImageFormatException)
-            {
-                return null;
-            }
+            return result;
         }
+
     }
 }
