@@ -2,11 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
+using RestSharp;
 using TumblrThemeSelect.Api;
 using TumblrThemeSelect.Val;
 
@@ -77,16 +79,28 @@ namespace TumblrThemeSelect
             GridLoading.Visibility = Visibility.Visible;
             t.Cav.CustomParams.Clear();
             foreach (dynamic param in StackPanelDefaultParam.Children) { t.Cav.CustomParams[param.ID] = param.Value; }
-            await ((Val.Theme)ListBoxTheme.SelectedItem)?.ApplyTheme(CurrentTheme);
+            var item = ((Val.Theme)ListBoxTheme.SelectedItem);
+            await Task.Factory.StartNew(() =>
+            {
+                if (!CurrentTheme)
+                {
+                    t.Cav.CustomTheme = Newtonsoft.Json.JsonConvert.DeserializeObject<Val.Theme>(t.restClient.Post(new RestRequest($"customize_api/theme/{t.Cav.Name}/{item.Id}").AddHeader("referer", "https://www.tumblr.com/customize/")).Content).ThemeCode;
+                    t.Cav.ThemeId = "0";
+                }
+                t.restClient.Post(new RestRequest($"customize_api/blog/{t.Cav.Name}").AddHeader("referer", $"https://www.tumblr.com/customize/{t.Cav.Name}").AddParameter("application/json", Newtonsoft.Json.JsonConvert.SerializeObject(t.Cav), ParameterType.RequestBody));
+            });
+
             BeginAnimation(WidthProperty, new DoubleAnimation(Width, 306, TimeSpan.FromSeconds(1)));
             GridLoading.Visibility = Visibility.Collapsed;
         }
         private void ButtonSelect_Click(object sender, RoutedEventArgs e)
         {
+            CurrentTheme = false;
             LoadEditing(((Val.Theme)ListBoxTheme.SelectedItem)?.DefaultParams);
         }
         private void ButtonCurrentThemeSettings_Click(object sender, RoutedEventArgs e)
         {
+            CurrentTheme = true;
             LoadEditing(t.Cav.CustomParams);
         }
         private void LoadEditing(IDictionary<string, object> data)
@@ -99,7 +113,6 @@ namespace TumblrThemeSelect
                 else if (param.Key.StartsWith("select:")) { }
                 else { StackPanelDefaultParam.Children.Add(new ParametrePanel(param.Key, param.Value, t, GridLoading)); }
             }
-            CurrentTheme = true;
             GridThemes.Visibility = Visibility.Collapsed;
             GridCustomize.Visibility = Visibility.Visible;
             GridLoading.Visibility = Visibility.Collapsed;

@@ -39,23 +39,5 @@ namespace TumblrThemeSelect.Val
         private ImageSource _ImageSource;
         [IgnoreDataMember]
         public ImageSource ImageSource => _ImageSource ?? (_ImageSource = new BitmapImage(new Uri($"https://33.media.tumblr.com/themes/wide/{WideThumbnailKey}.png")) { CacheOption = BitmapCacheOption.OnLoad, DecodePixelHeight = 173, DecodePixelWidth = 260 });
-
-        public Task<CustomizeApiValue> ApplyTheme(bool CurrentTheme)
-        {
-            return Task<CustomizeApiValue>.Factory.StartNew(() =>
-            {
-                if (!CurrentTheme)
-                {
-                    tumblr.Cav.CustomTheme =
-                        Newtonsoft.Json.JsonConvert.DeserializeObject<Theme>(
-                            tumblr.restClient.Post(
-                                new RestRequest($"customize_api/theme/{tumblr.Cav.Name}/{Id}").AddHeader("referer",
-                                    "https://www.tumblr.com/customize/")).Content).ThemeCode;
-
-                }
-                tumblr.restClient.Post(new RestRequest($"customize_api/blog/{tumblr.Cav.Name}").AddHeader("referer", $"https://www.tumblr.com/customize/{tumblr.Cav.Name}").AddParameter("application/json", Newtonsoft.Json.JsonConvert.SerializeObject(tumblr.Cav), ParameterType.RequestBody));
-                return tumblr.Cav;
-            });
-        }
     }
 }
