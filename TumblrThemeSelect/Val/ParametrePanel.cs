@@ -13,7 +13,7 @@ namespace TumblrThemeSelect.Val
 {
     public class ParametrePanel : StackPanel
     {
-        public string ID;
+        public string Id;
         public object Value;
 
         private static string FromColor(Color c)
@@ -52,7 +52,8 @@ namespace TumblrThemeSelect.Val
         private static bool CheckBool(dynamic b) => b is bool ? b : (b is string ? b.Contains("1") : false);
         private static bool CheckUrlValid(string source)
         {
-            return Uri.TryCreate(source, UriKind.Absolute, out var uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
+            Uri uriResult;
+            return Uri.TryCreate(source, UriKind.Absolute, out uriResult) && (uriResult.Scheme == Uri.UriSchemeHttp || uriResult.Scheme == Uri.UriSchemeHttps);
         }
 
         public ParametrePanel(string id, dynamic value, Tumblr t, UIElement loading)
@@ -61,7 +62,7 @@ namespace TumblrThemeSelect.Val
             Margin = new Thickness(0, 2, 0, 2);
             Height = 25;
 
-            ID = id;
+            Id = id;
             Value = value;
 
             dynamic val = null;
