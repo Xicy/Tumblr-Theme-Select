@@ -68,14 +68,13 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
+    <SignAssembly>true</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>
-    </AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>TumblrThemeSelect.pfx</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -142,6 +141,7 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <AppDesigner Include="Properties\" />
+    <None Include="TumblrThemeSelect.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Theme\Icon.ico" />
@@ -177,9 +177,9 @@
     </ItemGroup>
   </Target>
   <Target Name="AfterBuild">
-	<ItemGroup>
-        <FilesToDelete Include="$(OutDir)\*.dll"/>
-    </ItemGroup>   
-    <Delete Files="@(FilesToDelete)" />   
+    <ItemGroup>
+      <FilesToDelete Include="$(OutDir)\*.dll" />
+    </ItemGroup>
+    <Delete Files="@(FilesToDelete)" />
   </Target>
 </Project>
