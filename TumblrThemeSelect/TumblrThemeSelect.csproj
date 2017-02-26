@@ -68,13 +68,14 @@
     <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>true</SignAssembly>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <DelaySign>false</DelaySign>
   </PropertyGroup>
   <PropertyGroup>
-    <AssemblyOriginatorKeyFile>TumblrThemeSelect.pfx</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>
+    </AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CSharp" />
@@ -141,7 +142,6 @@
     <None Include="app.config" />
     <None Include="packages.config" />
     <AppDesigner Include="Properties\" />
-    <None Include="TumblrThemeSelect.pfx" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Theme\Icon.ico" />
